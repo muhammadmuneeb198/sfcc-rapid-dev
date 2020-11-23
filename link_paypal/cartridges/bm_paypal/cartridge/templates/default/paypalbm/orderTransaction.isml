@@ -1,0 +1,202 @@
+<isdecorate template="paypalbm/util/pt_paypal">
+
+<isinclude template="inc/Modules">
+<isinclude template="paypalbm/util/modules">
+
+<isset name="transaction" value="${pdict.transaction}" scope="page">
+<isset name="transactionID" value="${pdict.transactionID}" scope="page">
+<isset name="authorizationId" value="${pdict.authorizationId}" scope="page">
+<isset name="purchaseUnits" value="${transaction.purchase_units[0]}" scope="page">
+<isset name="payerData" value="${transaction.payer}" scope="page">
+<isset name="shippingAmount" value="${pdict.shippingAmount}" scope="page">
+<isset name="taxAmount" value="${pdict.taxAmount}" scope="page">
+<isset name="handleAmount" value="${pdict.handleAmount}" scope="page">
+<isset name="email" value="${pdict.email}" scope="page">
+<isset name="order" value="${pdict.order}" scope="page">
+<isset name="isCustomOrder" value="${pdict.isCustomOrder}" scope="page">
+<isset name="orderTransactionsIds" value="${pdict.orderTransactionsIds}" scope="page">
+
+<div class="js_paypalbm_order_detail" data-orderNo="${order.orderNo}" data-iscustom="${isCustomOrder ? true : false}" data-currencycode="${order.currencyCode}"></div>
+
+<div class="paypalbm_header">
+	<isset name="ordersUrl" value="${URLUtils.url('SiteNavigationBar-ShowMenuitemOverview', 'CurrentMenuItemId', 'orders')}" scope="page">
+	<isset name="transactionsUrl" value="${URLUtils.url('PaypalAdmin-Orders')}" scope="page">
+	<isbreadcrumb
+		name1="Ordering" url1="${ordersUrl}"
+		name2="PayPal Transactions" url2="${transactionsUrl}"
+		name3="${Resource.msgf('ordertransaction.breadcrumb', 'paypalbm', null, order.orderNo)}">
+	
+	<table>
+		<tr><td width="100%" class="table_title w e s n">${Resource.msgf('ordertransaction.title', 'paypalbm', null, order.orderNo)}</td></tr>
+		<tr><td class="w e s"></td></tr>
+		<iscomment><tr><td class="table_title_description e w s"><p>${Resource.msg('ordertransaction.description', 'paypalbm', null)}</p></td></tr></iscomment>
+	</table>
+</div>
+
+	<div class="paypalbm_selectother_transactions">
+		<span>${Resource.msg('ordertransaction.othertransactions', 'paypalbm', null)}:</span>
+		<select class="js_paypalbm_order_transactions_ids">
+			<option value="" >${transactionID}</option>
+			<isif condition="${!empty(transaction.captures)}">
+				<isloop items="${transaction.captures}" var="captureID">
+					<option value="${captureID.id}" ${captureID.id === transaction.captureID ? 'selected="selected"' : ''}>${Resource.msg('capture.amount', 'paypalbm', null)} ${captureID.id}</option>
+				</isloop>
+			</isif>
+		</select>
+	</div>
+
+<h2>${Resource.msgf('transaction.detail.title', 'paypalbm', null, transactionID)}</h2>
+
+<isif condition="${!empty(transaction.captureID)}">
+	<h2>${Resource.msgf('capture.detail.title', 'paypalbm', null, transaction.captureID)}</h2>
+</isif>
+
+<table class="paypalbm_transaction_detail_table infobox w e s n">
+	<tr>
+		<td class="infobox_title top">${Resource.msg('transaction.detail.customername', 'paypalbm', null)}:</td>
+		<td class="infobox_item top">
+			${Resource.msgf('transaction.detail.customerformatwithstatus', 'paypalbm', null, transaction.firstname, transaction.lastname)}
+		</td>
+	</tr>
+	<tr class="paypalbm_gray">
+		<td class="infobox_title top">${Resource.msg('transaction.detail.customeremail', 'paypalbm', null)}:</td>
+		<td class="infobox_item top">${email}</td>
+	</tr>
+</table>
+
+<table class="paypalbm_transaction_detail_table infobox w e s n">
+	<tr>
+		<td class="infobox_title top">${Resource.msg('transaction.detail.amt', 'paypalbm', null)}:</td>
+		<td class="infobox_item top">
+			${Resource.msgf('transaction.detail.moneyformat', 'paypalbm', null, transaction.amt, transaction.currencycode)}
+			<isif condition="${!empty(transaction.capturedAmount)}">
+				<span><i>${Resource.msg('capture.amount', 'paypalbm', null)}</i> ${transaction.capturedAmount}</span>
+			</isif>
+			<isif condition="${!empty(transaction.refundedAmount)}">
+				<span><i>${Resource.msg('capture.refund', 'paypalbm', null)}</i> ${transaction.refundedAmount}</span>
+			</isif>
+		</td>
+	</tr>
+	<isif condition="${transaction.paymentstatus !== 'REFUNDED'}">
+        <isif condition="${shippingAmount !== null}">
+    		<tr class="paypalbm_gray">
+    			<td class="infobox_title top">${Resource.msg('transaction.detail.shippingamt', 'paypalbm', null)}:</td>
+    			<td class="infobox_item top">${Resource.msgf('transaction.detail.moneyformat', 'paypalbm', null, shippingAmount, transaction.currencycode)}</td>
+    		</tr>
+        </isif>
+		<isif condition="${taxAmount !== null}">
+			<tr>
+				<td class="infobox_title top">${Resource.msg('transaction.detail.salestax', 'paypalbm', null)}:</td>
+				<td class="infobox_item top">${Resource.msgf('transaction.detail.moneyformat', 'paypalbm', null, taxAmount, transaction.currencycode)}</td>
+			</tr>
+		</isif>
+		<isif condition="${handleAmount !== null}">
+    		<tr class="paypalbm_gray">
+    			<td class="infobox_title top">${Resource.msg('transaction.detail.handlingamt', 'paypalbm', null)}:</td>
+    			<td class="infobox_item top">${Resource.msgf('transaction.detail.moneyformat', 'paypalbm', null, handleAmount, transaction.currencycode)}</td>
+    		</tr>
+        </isif>
+	</isif>
+</table>
+
+<table class="paypalbm_transaction_detail_table infobox w e s n">
+    <isif condition="${purchaseUnits.invoice_id !== undefined}">
+    	<tr>
+    		<td class="infobox_title top">${Resource.msg('transaction.detail.invnum', 'paypalbm', null)}:</td>
+    		<td class="infobox_item top">${purchaseUnits.invoice_id}</td>
+    	</tr>
+    </isif>
+	<tr class="paypalbm_gray">
+		<td class="infobox_title top">${Resource.msg('transaction.detail.ordertime', 'paypalbm', null)}:</td>
+		<td class="infobox_item top">${transaction.orderTimeCreated || transaction.orderTimeUpdated}</td>
+	</tr>
+	<tr>
+		<td class="infobox_title top">${Resource.msg('transaction.detail.paymentstatus', 'paypalbm', null)}:</td>
+		<td class="infobox_item top">${transaction.paymentstatus}
+		</td>
+	</tr>
+	<tr>
+		<td class="infobox_title top"></td>
+		<td class="infobox_item top">
+			<ul class="paypalbm_transaction_actions">
+				<isset name="isOrder" value="${transaction.transactionid.indexOf('O-') !== -1}" scope="page" />
+				<isif condition="${(transaction.paymentstatus !== 'REFUNDED' && (transaction.paymentstatus === 'COMPLETED' || transaction.paymentstatus === 'PARTIALLY_REFUNDED') && transaction.intent === 'CAPTURE') || ((transaction.paymentstatus === 'PARTIALLY_REFUNDED') && transaction.intent === 'AUTHORIZE')
+				 || transaction.paymentstatus === 'COMPLETED' && transaction.intent === 'AUTHORIZE'}">
+					<li>
+						<span class="js_paypal_action" data-action="refund" data-title="${Resource.msg('transaction.refund.title', 'paypalbm', null)}">${Resource.msg('transaction.actions.refund', 'paypalbm', null)}</span>
+					</li>
+				</isif>
+				<isif condition="${transaction.paymentstatus !== 'VOIDED' && transaction.paymentstatus !== 'CAPTURED' && transaction.paymentstatus !== 'REFUNDED' && !transaction.isCaptured && transaction.isCaptureButtonAllowed}">
+					<isif condition="${pdict.isExpiredHonorPeriod}">
+						<li>
+							<span class="js_paypal_action" data-action="reauthorize" data-title="${Resource.msg('transaction.reauthorize.title', 'paypalbm', null)}">${Resource.msg('transaction.actions.reauthorize', 'paypalbm', null)}</span>
+						</li>
+					</isif>
+					<li>
+						<span class="js_paypal_action" data-action="capture" data-title="${Resource.msg('transaction.capture.title', 'paypalbm', null)}">${Resource.msg('transaction.actions.capture', 'paypalbm', null)}</span>
+					</li>
+				</isif>
+				<isif condition="${transaction.paymentstatus !== 'VOIDED' && transaction.paymentstatus !== 'CAPTURED' && transaction.paymentstatus !== 'REFUNDED' && transaction.paymentstatus !== 'PARTIALLY_REFUNDED' && transaction.intent === 'AUTHORIZE' && empty(transaction.capturedAmount)}">
+					<li>
+						<span class="js_paypal_action" data-action="void" data-title="${Resource.msg('transaction.void.title', 'paypalbm', null)}">${Resource.msg('transaction.actions.void', 'paypalbm', null)}</span>
+					</li>
+				</isif>
+
+			</ul>
+		</td>
+	</tr>
+</table>
+
+<isif condition="${transaction.paymentstatus !== 'REFUNDED'}">
+	<table class="paypalbm_transaction_detail_table infobox w e s n">
+		<tr class="paypalbm_gray">
+			<td class="infobox_title top">${Resource.msg('transaction.detail.shipaddress', 'paypalbm', null)}:</td>
+			
+			<isset name="address" value="${purchaseUnits.shipping.address}" scope="page">
+			<isset name="shiptoname" value="${purchaseUnits.shipping.name.full_name}" scope="page">
+			<isif condition="${shiptoname === null}">
+				<isset name="shiptoname" value="No name" scope="page">
+			</isif>
+			<isset name="shiptostreet" value="${address && address.address_line_1}" scope="page">
+			<isif condition="${shiptostreet === null}">
+				<isset name="shiptostreet" value="No street" scope="page">
+			</isif>
+			<isset name="shiptostreet2" value="${address && address.address_line_2}" scope="page">
+			<isif condition="${shiptostreet2 === null}">
+				<isset name="shiptostreet2" value="No address" scope="page">
+			</isif>
+			<isset name="shiptocity" value="${address && address.admin_area_2}" scope="page">
+			<isif condition="${shiptocity === null}">
+				<isset name="shiptocity" value="No city" scope="page">
+			</isif>
+			<isset name="shiptostate" value="${address && address.country_code}" scope="page">
+			<isif condition="${shiptostate === null}">
+				<isset name="shiptostate" value="No state" scope="page">
+			</isif>
+			<isset name="shiptozip" value="${address && address.postal_code}" scope="page">
+			<isif condition="${shiptozip === null}">
+				<isset name="shiptozip" value="" scope="page">
+			</isif>
+			<isset name="shiptocountry" value="${address && address.admin_area_1}" scope="page">
+			<isif condition="${shiptocountry === null}">
+				<isset name="shiptocountry" value="" scope="page">
+			</isif>
+			<td class="infobox_item top" colspan="3">
+				<isprint value="${Resource.msgf('transaction.detail.shipaddressformat', 'paypalbm', null, shiptoname, shiptostreet, shiptostreet2, shiptocity, shiptostate, shiptozip, shiptocountry)}" encoding="jshtml"/>
+			</td>
+		</tr>
+	</table>
+</isif>
+        
+<div class="paypalbm_footer">
+	<a class="button" href="${transactionsUrl}">&lt;&lt; ${Resource.msg('ordertransaction.backtolist', 'paypalbm', null)}</a>
+</div>
+
+<isinclude template="paypalbm/components/actionCaptureForm"/>
+<isinclude template="paypalbm/components/actionRefundForm"/>
+<isinclude template="paypalbm/components/actionSaleForm"/>
+<isinclude template="paypalbm/components/actionAuthorizationForm"/>
+<isinclude template="paypalbm/components/actionReauthorizeForm"/>
+<isinclude template="paypalbm/components/actionVoidForm"/>
+
+</isdecorate>

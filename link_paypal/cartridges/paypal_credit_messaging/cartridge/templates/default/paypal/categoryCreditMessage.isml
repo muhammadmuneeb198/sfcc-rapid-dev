@@ -1,0 +1,12 @@
+<isif condition="${pdict.creditMessageAvaliable}">
+    <isscript>
+        var assets = require('*/cartridge/scripts/assets');
+        assets.addJs(pdict.paypal.bannerSdkUrl);
+    </isscript>
+    <isset name="bannerConfig" value="${pdict.paypal.bannerConfig}" scope="page" />
+    <div data-pp-message data-pp-placement="category" data-pp-amount="${pdict.paypal.paypalAmount}"
+        data-pp-style-layout="${bannerConfig.layout}" data-pp-style-color="${bannerConfig.styleColor || ''}"
+        data-pp-style-ratio="${bannerConfig.ratio || ''}" data-pp-style-logo-type="${bannerConfig.logoType || ''}"
+        data-pp-style-logo-position="${bannerConfig.logoPosition || ''}"
+        data-pp-style-text-color="${bannerConfig.textColor || ''}"></div>
+</isif>

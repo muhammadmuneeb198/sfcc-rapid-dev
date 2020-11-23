@@ -1,0 +1,17 @@
+<isscript>
+    var { bannerSize, publisherID, isActive } = require('../../../../config/financialPreferences')
+</isscript>
+
+<isif condition="${isActive}">
+    <div>
+        <script type="text/javascript" data-pp-pubid="${publisherID}" data-pp-placementtype="${bannerSize}">
+        (function (d, t) {
+            "use strict";
+            var s = d.getElementsByTagName(t)[0],
+            n = d.createElement(t);
+            n.src = "//paypal.adtag.where.com/merchant.js";
+            s.parentNode.insertBefore(n, s);
+        }(document, "script"));
+    </script>
+    </div>
+</isif>

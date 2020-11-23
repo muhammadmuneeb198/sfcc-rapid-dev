@@ -1,0 +1,37 @@
+<isset name="isSessionAccount" value="${!!pdict.paypal.paypalEmail}" scope="page" />
+<isset name="customerPaypalPaymentInstruments" value="${pdict.paypal.customerPaypalPaymentInstruments}" scope="page" />
+<isset name="showDropdown" value="${isSessionAccount || (customer.authenticated && !empty(customerPaypalPaymentInstruments))}" scope="page" />
+<isset name="sessionBAEmail" value="${session.privacy.baEmail}" scope="page" />
+<isset name="isBAEnabled" value="${pdict.paypal.prefs.billingAgreementEnabled}" scope="page" />
+
+<div id="paypalAccountsDropdown" style="display: ${showDropdown ? 'block' : 'none'}">
+    <label class="form-control-label"
+        for="restPaypalAccountsList">${Resource.msg('paypal.checkout.paypalaccountlist.label', 'locale', null)}
+    </label>
+
+    <select name="restPaypalAccountsList" id="restPaypalAccountsList"
+        data-has-default-account="${pdict.paypal.hasDefaultPaymentMethod}" class="form-control"
+        data-has-saved-account="${!empty(customerPaypalPaymentInstruments)}"
+        data-ba-limit-reached="${pdict.paypal.isBALimitReached}">
+        <option value="newaccount" ${isSessionAccount || sessionBAEmail ? '' : 'selected'}>
+            ${Resource.msg('paypal.checkout.paypalaccountlist.newaccount', 'locale', null)}
+        </option>
+
+        <isif condition="${customer.authenticated && !empty(customerPaypalPaymentInstruments)}">
+            <isloop items="${customerPaypalPaymentInstruments}" var="instrument">
+                <isset name="isDataAppend" value="${!empty(sessionBAEmail) && instrument.email === sessionBAEmail}" scope="page" />
+
+                <option value="${instrument.email}" data-default="${instrument.default}" ${isDataAppend ? "data-append='true' class='sessionBA'" : ''}
+                    ${(instrument.default || instrument.email === sessionBAEmail) ? 'selected' : ''} >
+                    ${instrument.email} ${instrument.default ? Resource.msg('paypal.checkout.default', 'locale', null) : ''}
+                </option>
+            </isloop>
+        </isif>
+        <isif condition="${!customer.authenticated || customer.authenticated && !isBAEnabled}">
+            <option id="sessionPaypalAccount" data-is-session="true" ${isSessionAccount ? 'selected' : ''}
+                value="${pdict.paypal.paypalEmail || ''}" style="display: ${pdict.paypal.paypalEmail ? 'block' : 'none'}">
+                <isprint value="${pdict.paypal.paypalEmail || ''}" encoding="on" />
+            </option>
+        </isif>
+    </select>
+</div>

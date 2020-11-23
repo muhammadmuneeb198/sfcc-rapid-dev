@@ -1,0 +1,47 @@
+{
+  "name": "sfra-webpack-builder",
+  "version": "1.1.0",
+  "main": "index.js",
+  "licence": "see in readme.md",
+  "scripts": {
+    "npmInstall": "node ./sfra-webpack-builder/installHandling/install.js",
+    "prod": "webpack --config ./sfra-webpack-builder/webpack.config.js --env.dev=false",
+    "dev": "webpack --config ./sfra-webpack-builder/webpack.config.js  --env.dev",
+    "watch": "webpack --config ./sfra-webpack-builder/webpack.config.js  --env.dev --watch",
+    "watch:lint": "webpack --config ./sfra-webpack-builder/webpack.config.js  --env.dev --env.useLinter --watch"
+  },
+  "sfraBuilderConfig": "./sfraBuilderConfig",
+  "dependencies": {
+    "archiver": "^3.0.0",
+    "@babel/core": "^7.6.0",
+    "@babel/plugin-proposal-object-rest-spread": "^7.6.0",
+    "@babel/preset-env": "^7.6.0",
+    "@tridnguyen/config": "^2.3.1",
+    "babel-loader": "^8.0.0-beta.3",
+    "babel-plugin-module-resolver": "^3.2.0",
+    "chai": "^3.5.0",
+    "clean-webpack-plugin": "^1.0.1",
+    "css-loader": "^1.0.0",
+    "eslint": "^3.2.2",
+    "eslint-config-airbnb-base": "^5.0.1",
+    "eslint-loader": "^2.1.2",
+    "eslint-plugin-import": "^1.12.0",
+    "extract-text-webpack-plugin": "^4.0.0-beta.0",
+    "fs-extra": "^7.0.1",
+    "minimist": "^1.2.0",
+    "mocha": "^5.2.0",
+    "mocha-junit-reporter": "^1.12.0",
+    "node-sass": "^4.9.4",
+    "postcss-loader": "^3.0.0",
+    "proxyquire": "1.7.4",
+    "sass-loader": "^7.0.3",
+    "shelljs": "^0.7.7",
+    "sinon": "^1.17.4",
+    "stylelint-webpack-plugin": "^0.10.5",
+    "terser-webpack-plugin": "^1.2.3",
+    "stylelint": "^13.7.2",
+    "webpack": "^4.41.2",
+    "webpack-cli": "^3.3.9"
+  }
+}
+

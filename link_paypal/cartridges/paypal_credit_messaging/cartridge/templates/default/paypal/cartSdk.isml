@@ -1,0 +1,6 @@
+<isif condition="${!dw.system.Site.getCurrent().getCustomPreferenceValue('PP_API_BA_Enabled') && dw.system.Site.getCurrent().getCustomPreferenceValue('PP_Show_On_Cart') && !pdict.paypal.isSdkRequired}">
+    <isscript>
+        var assets = require('*/cartridge/scripts/assets');
+        assets.addJs(pdict.bannerSdkUrl);
+    </isscript>
+</isif>

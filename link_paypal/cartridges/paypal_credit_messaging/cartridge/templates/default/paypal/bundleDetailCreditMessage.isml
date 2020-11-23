@@ -1,0 +1,19 @@
+<isif condition="${pdict.creditMessageAvaliable && pdict.product.productType === 'bundle'}">
+    <isscript>
+        var assets = require('*/cartridge/scripts/assets');
+        assets.addJs(pdict.paypal.bannerSdkUrl);
+        assets.addJs('js/dynamicPriceUpdate.js');
+    </isscript>
+    <isset name="bannerConfig" value="${pdict.paypal.bannerConfig}" scope="page" />
+    <div class="row">
+        <div class="col-12">
+            <div class="js_credit_message_pdp" data-pp-message data-pp-placement="product"
+                data-pp-amount="${price.value}" data-pp-style-layout="${bannerConfig.layout}"
+                data-pp-style-color="${bannerConfig.styleColor || ''}" data-pp-style-ratio="${bannerConfig.ratio || ''}"
+                data-pp-style-logo-type="${bannerConfig.logoType || ''}"
+                data-pp-style-logo-position="${bannerConfig.logoPosition || ''}"
+                data-pp-style-text-color="${bannerConfig.textColor || ''}">
+            </div>
+        </div>
+    </div>
+</isif>

@@ -1,0 +1,344 @@
+image: node:10.15.3
+
+options:
+    max-time: 30
+
+pipelines:
+
+    custom:
+        BuildMerge:
+            - step:
+                name: Manual Build to Build & Merge Server
+                deployment: BuildMerge
+                caches:
+                    - node
+                artifacts:
+                    - storefront-reference-architecture/cartridges/app_custom_lbct/cartridge/static/default/css/**
+                    - storefront-reference-architecture/cartridges/app_custom_lbct/cartridge/static/default/js/**
+                script:
+                    # - echo $CARTRIDGES_TO_UPLOAD  + "---password:" + $DEVELOPMENT_PASSWORD + "---username" + $DEVELOPMENT_USERNAME
+                    - cd storefront-reference-architecture
+                    - npm install
+                    - npm run compile:scss && npm run compile:js && npm run compile:fonts
+                    # - cd ../
+                    # - cd plugin_wishlists
+                    # - npm install
+                    # - npm run compile:scss && npm run compile:js
+                    # - cd ../
+                    # - cd plugin_cartridge_merge
+                    # - npm install
+                    # - npm run compile:scss && npm run compile:js
+                    # - cd ../
+                    # - cd plugin_giftregistry
+                    # - npm install
+                    # - npm run compile:scss && npm run compile:js
+                    # - cd ../
+                    # - cd plugin_productcompare
+                    # - npm install
+                    # - npm run compile:scss && npm run compile:js
+                    # - cd ../
+                    # - cd plugin_instorepickup
+                    # - npm install
+                    # - npm run compile:scss && npm run compile:js
+                    # - cd ../   
+                    # - cd plugin-applepay
+                    # - npm install
+                    # - npm run compile:scss && npm run compile:js
+                    - cd ../
+                    - echo "Finished compiling Catriges"
+                    - mkdir $CARTRIDGES_DIRECTORY
+                    - mv storefront-reference-architecture/cartridges/* $CARTRIDGES_DIRECTORY/
+                    - mv plugin_wishlists/cartridges/* $CARTRIDGES_DIRECTORY/
+                    - mv plugin_cartridge_merge/cartridges/* $CARTRIDGES_DIRECTORY/
+                    - mv plugin_giftregistry/cartridges/* $CARTRIDGES_DIRECTORY/
+                    - mv plugin_productcompare/cartridges/* $CARTRIDGES_DIRECTORY/
+                    - mv plugin_instorepickup/cartridges/* $CARTRIDGES_DIRECTORY/
+                    - mv plugin-applepay/cartridges/* $CARTRIDGES_DIRECTORY/
+                    - mv lib_productlist/cartridges/* $CARTRIDGES_DIRECTORY/
+                    - mv plugin_sitemap/cartridges/* $CARTRIDGES_DIRECTORY/
+                    - mv plugin_datadownload/cartridges/* $CARTRIDGES_DIRECTORY/
+                    - cd $CARTRIDGES_DIRECTORY
+                    - echo "Finished moving compiled Catriges to temp Directory"
+                    - echo "$CARTRIDGES_TO_UPLOAD"  + "---password:" + "$DEVELOPMENT_PASSWORD" + "---username" + "$DEVELOPMENT_USERNAME"
+                    - env; [ -z "$CARTRIDGES_TO_UPLOAD" ] && CARTRIDGES_TO_UPLOAD="$(ls -dm */ | sed 's#/##g' | tr -d '[:space:]' | sed 's/node_modules\,//g' | sed 's/\,node_modules//g' | sed 's/bin\,//g' | sed 's/\,bin//g')"
+                    - GITBRANCH=$(git branch | sed -n -e 's/^\* \(.*\)/\1/p')
+                    - GITBRANCH="${GITBRANCH//[.\/]/-}"
+                    - GITHASH=$(git rev-parse --short HEAD)
+                    - ../storefront-reference-architecture/node_modules/.bin/dwupload --hostname $DEVELOPMENT_HOSTNAME --username $DEVELOPMENT_USERNAME --password "$DEVELOPMENT_PASSWORD" --code-version "development-$BITBUCKET_BUILD_NUMBER-$GITBRANCH-$GITHASH" --cartridge $CARTRIDGES_TO_UPLOAD
+                    - cd ../
+                    - bash build-activate.sh $DEVELOPMENT_HOSTNAME $DEVELOPMENT_USERNAME "$DEVELOPMENT_PASSWORD" "development-$BITBUCKET_BUILD_NUMBER-$GITBRANCH-$GITHASH" "$BUILD_USER_AGENT"
+
+
+        Sandbox1:
+            - step:
+                name: Manual Build to Sandbox1
+                deployment: Sandbox1
+                caches:
+                    - node
+                artifacts:
+                    - storefront-reference-architecture/cartridges/app_custom_lbct/cartridge/static/default/css/**
+                    - storefront-reference-architecture/cartridges/app_custom_lbct/cartridge/static/default/js/**
+                script:
+                    #- cd storefront-reference-architecture
+                    #- npm install
+                    #- npm run compile:scss && npm run compile:js && npm run compile:fonts
+                    #- cd ../
+                    #- cd plugin_wishlists
+                    #- npm install
+                    #- npm run compile:scss && npm run compile:js
+                    #- cd ../
+                    #- cd plugin_cartridge_merge
+                    #- npm install
+                    #- npm run compile:scss && npm run compile:js
+                    #- cd ../
+                    #- cd plugin_giftregistry
+                    #- npm install
+                    #- npm run compile:scss && npm run compile:js
+                    #- cd ../
+                    #- cd plugin_productcompare
+                    #- npm install
+                    #- npm run compile:scss && npm run compile:js
+                    #- cd ../
+                    #- cd plugin_instorepickup
+                    #- npm install
+                    #- npm run compile:scss && npm run compile:js
+                    #- cd ../   
+                    #- cd plugin-applepay
+                    #- npm install
+                    #- npm run compile:scss && npm run compile:js
+                    #- cd ../
+                    - echo "i am done 1"  
+        Sandbox2:
+           - step:
+                name: Manual Build to Sandbox2
+                deployment: Sandbox2
+                caches:
+                    - node
+                artifacts:
+                    - storefront-reference-architecture/cartridges/app_custom_lbct/cartridge/static/default/css/**
+                    - storefront-reference-architecture/cartridges/app_custom_lbct/cartridge/static/default/js/**
+                script:
+                    #- cd storefront-reference-architecture
+                    #- npm install
+                    #- npm run compile:scss && npm run compile:js && npm run compile:fonts
+                    #- cd ../
+                    #- cd plugin_wishlists
+                    #- npm install
+                    #- npm run compile:scss && npm run compile:js
+                    #- cd ../
+                    #- cd plugin_cartridge_merge
+                    #- npm install
+                    #- npm run compile:scss && npm run compile:js
+                    #- cd ../
+                    #- cd plugin_giftregistry
+                    #- npm install
+                    #- npm run compile:scss && npm run compile:js
+                    #- cd ../
+                    #- cd plugin_productcompare
+                    #- npm install
+                    #- npm run compile:scss && npm run compile:js
+                    #- cd ../
+                    #- cd plugin_instorepickup
+                    #- npm install
+                    #- npm run compile:scss && npm run compile:js
+                    #- cd ../   
+                    #- cd plugin-applepay
+                    #- npm install
+                    #- npm run compile:scss && npm run compile:js
+                    #- cd ../
+                    - echo "i am done 1"                    
+        Sandbox3:
+           - step:
+                name: Manual Build to Sandbox3
+                deployment: Sandbox3
+                caches:
+                    - node
+                artifacts:
+                    - storefront-reference-architecture/cartridges/app_custom_lbct/cartridge/static/default/css/**
+                    - storefront-reference-architecture/cartridges/app_custom_lbct/cartridge/static/default/js/**
+                script:
+                    #- cd storefront-reference-architecture
+                    #- npm install
+                    #- npm run compile:scss && npm run compile:js && npm run compile:fonts
+                    #- cd ../
+                    #- cd plugin_wishlists
+                    #- npm install
+                    #- npm run compile:scss && npm run compile:js
+                    #- cd ../
+                    #- cd plugin_cartridge_merge
+                    #- npm install
+                    #- npm run compile:scss && npm run compile:js
+                    #- cd ../
+                    #- cd plugin_giftregistry
+                    #- npm install
+                    #- npm run compile:scss && npm run compile:js
+                    #- cd ../
+                    #- cd plugin_productcompare
+                    #- npm install
+                    #- npm run compile:scss && npm run compile:js
+                    #- cd ../
+                    #- cd plugin_instorepickup
+                    #- npm install
+                    #- npm run compile:scss && npm run compile:js
+                    #- cd ../   
+                    #- cd plugin-applepay
+                    #- npm install
+                    #- npm run compile:scss && npm run compile:js
+                    #- cd ../
+                    - echo "i am done 1"
+        Sandbox4:
+           - step:
+                name: Manual Build to Sandbox4
+                deployment: Sandbox4
+                caches:
+                    - node
+                artifacts:
+                    - storefront-reference-architecture/cartridges/app_custom_lbct/cartridge/static/default/css/**
+                    - storefront-reference-architecture/cartridges/app_custom_lbct/cartridge/static/default/js/**
+                script:
+                    #- cd storefront-reference-architecture
+                    #- npm install
+                    #- npm run compile:scss && npm run compile:js && npm run compile:fonts
+                    #- cd ../
+                    #- cd plugin_wishlists
+                    #- npm install
+                    #- npm run compile:scss && npm run compile:js
+                    #- cd ../
+                    #- cd plugin_cartridge_merge
+                    #- npm install
+                    #- npm run compile:scss && npm run compile:js
+                    #- cd ../
+                    #- cd plugin_giftregistry
+                    #- npm install
+                    #- npm run compile:scss && npm run compile:js
+                    #- cd ../
+                    #- cd plugin_productcompare
+                    #- npm install
+                    #- npm run compile:scss && npm run compile:js
+                    #- cd ../
+                    #- cd plugin_instorepickup
+                    #- npm install
+                    #- npm run compile:scss && npm run compile:js
+                    #- cd ../   
+                    #- cd plugin-applepay
+                    #- npm install
+                    #- npm run compile:scss && npm run compile:js
+                    #- cd ../
+                    - echo "i am done 1"
+        Sandbox5:
+           - step:
+                name: Manual Build to Sandbox5
+                deployment: Sandbox5
+                caches:
+                    - node
+                artifacts:
+                    - storefront-reference-architecture/cartridges/app_custom_lbct/cartridge/static/default/css/**
+                    - storefront-reference-architecture/cartridges/app_custom_lbct/cartridge/static/default/js/**
+                script:
+                    #- cd storefront-reference-architecture
+                    #- npm install
+                    #- npm run compile:scss && npm run compile:js && npm run compile:fonts
+                    #- cd ../
+                    #- cd plugin_wishlists
+                    #- npm install
+                    #- npm run compile:scss && npm run compile:js
+                    #- cd ../
+                    #- cd plugin_cartridge_merge
+                    #- npm install
+                    #- npm run compile:scss && npm run compile:js
+                    #- cd ../
+                    #- cd plugin_giftregistry
+                    #- npm install
+                    #- npm run compile:scss && npm run compile:js
+                    #- cd ../
+                    #- cd plugin_productcompare
+                    #- npm install
+                    #- npm run compile:scss && npm run compile:js
+                    #- cd ../
+                    #- cd plugin_instorepickup
+                    #- npm install
+                    #- npm run compile:scss && npm run compile:js
+                    #- cd ../   
+                    #- cd plugin-applepay
+                    #- npm install
+                    #- npm run compile:scss && npm run compile:js
+                    #- cd ../
+                    - echo "i am done 1"
+        staging:
+           - step:
+                name: Manual Build to Staging
+                deployment: staging
+                caches:
+                    - node
+                artifacts:
+                    - storefront-reference-architecture/cartridges/app_custom_lbct/cartridge/static/default/css/**
+                    - storefront-reference-architecture/cartridges/app_custom_lbct/cartridge/static/default/js/**
+                script:
+                    #- cd storefront-reference-architecture
+                    #- npm install
+                    #- npm run compile:scss && npm run compile:js && npm run compile:fonts
+                    #- cd ../
+                    #- cd plugin_wishlists
+                    #- npm install
+                    #- npm run compile:scss && npm run compile:js
+                    #- cd ../
+                    #- cd plugin_cartridge_merge
+                    #- npm install
+                    #- npm run compile:scss && npm run compile:js
+                    #- cd ../
+                    #- cd plugin_giftregistry
+                    #- npm install
+                    #- npm run compile:scss && npm run compile:js
+                    #- cd ../
+                    #- cd plugin_productcompare
+                    #- npm install
+                    #- npm run compile:scss && npm run compile:js
+                    #- cd ../
+                    #- cd plugin_instorepickup
+                    #- npm install
+                    #- npm run compile:scss && npm run compile:js
+                    #- cd ../   
+                    #- cd plugin-applepay
+                    #- npm install
+                    #- npm run compile:scss && npm run compile:js
+                    #- cd ../
+                    - echo "i am done 1"
+        development:
+           - step:
+                name: Manual Build to Staging
+                deployment: development
+                caches:
+                    - node
+                artifacts:
+                    - storefront-reference-architecture/cartridges/app_custom_lbct/cartridge/static/default/css/**
+                    - storefront-reference-architecture/cartridges/app_custom_lbct/cartridge/static/default/js/**
+                script:
+                    #- cd storefront-reference-architecture
+                    #- npm install
+                    #- npm run compile:scss && npm run compile:js && npm run compile:fonts
+                    #- cd ../
+                    #- cd plugin_wishlists
+                    #- npm install
+                    #- npm run compile:scss && npm run compile:js
+                    #- cd ../
+                    #- cd plugin_cartridge_merge
+                    #- npm install
+                    #- npm run compile:scss && npm run compile:js
+                    #- cd ../
+                    #- cd plugin_giftregistry
+                    #- npm install
+                    #- npm run compile:scss && npm run compile:js
+                    #- cd ../
+                    #- cd plugin_productcompare
+                    #- npm install
+                    #- npm run compile:scss && npm run compile:js
+                    #- cd ../
+                    #- cd plugin_instorepickup
+                    #- npm install
+                    #- npm run compile:scss && npm run compile:js
+                    #- cd ../   
+                    #- cd plugin-applepay
+                    #- npm install
+                    #- npm run compile:scss && npm run compile:js
+                    #- cd ../
+                    - echo "i am done 1"

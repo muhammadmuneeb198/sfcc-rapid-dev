@@ -1,0 +1,23 @@
+<isif condition="${!empty(pdict.paypal.savedBA)}">
+    <div class="card">
+        <div class="card-header clearfix">
+            <h2 class="pull-left">${Resource.msg('label.payment.paypal', 'account', null)}</h2>
+        </div>
+        <div class="card-body card-info-group">
+            <isif condition="${!pdict.paypal.billingAgreementEnabled}" >
+                <div class="alert alert-info" role="alert">
+                    <p>${Resource.msg('paypal.accountslist.usagedisabled', 'locale', null)}</p>
+                </div>
+            </isif>
+            <isloop items="${pdict.paypal.savedBA}" var="savedBA">
+                <isif condition="${savedBA.default}">
+                    <p>
+                        <b>${savedBA.email} ${Resource.msg('paypal.accountslist.default', 'locale', null)}</b>
+                    </p>
+                    <iselse>
+                        <p>${savedBA.email}</p>
+                </isif>
+            </isloop>
+        </div>
+    </div>
+</isif>

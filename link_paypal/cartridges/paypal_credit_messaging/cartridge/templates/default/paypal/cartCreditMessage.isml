@@ -1,0 +1,14 @@
+<isif condition="${pdict.creditMessageAvaliable}">
+    <div class="row">
+        <div class="col-12">
+            <div data-pp-message data-pp-placement="cart" data-pp-amount="${pdict.paypalAmount}"
+                data-pp-style-layout="${pdict.bannerConfig.layout}"
+                data-pp-style-color="${pdict.bannerConfig.styleColor || ''}"
+                data-pp-style-ratio="${pdict.bannerConfig.ratio || ''}"
+                data-pp-style-logo-type="${pdict.bannerConfig.logoType || ''}"
+                data-pp-style-logo-position="${pdict.bannerConfig.logoPosition || ''}"
+                data-pp-style-text-color="${pdict.bannerConfig.textColor || ''}">
+            </div>
+        </div>
+    </div>
+</isif>
